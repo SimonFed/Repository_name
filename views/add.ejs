@@ -1,0 +1,19 @@
+<%- include('particles/header.ejs') %>
+
+<%- include('particles/navigation.ejs') %>
+
+<form action="/store" method="post">
+    <div class="form-group">
+        <label class="form-group__label" for="title">title</label>
+        <input class="form-group__input" type="text" id="title" name="title" placeholder="title">
+    </div>
+
+    <div class="form-group">
+        <label class="form-group__label" for="image">image</label>
+        <input class="form-group__input" type="text" id="image" name="image" placeholder="image">
+    </div>
+
+    <input class="form-button" type="submit" value="Создать">
+</form>
+
+<%- include('particles/footer.ejs') %>

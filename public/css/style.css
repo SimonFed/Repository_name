@@ -1,0 +1,39 @@
+.section {
+    padding: 20px;
+    border-radius: 8px;
+    display: inline-block;
+    border: 2px solid blue;
+    background-color: lightcyan;
+}
+
+.section__image {
+    border-radius: 8px;
+}
+
+.section__title {
+    margin-top: 0;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group__label {
+    display: block;
+    margin-bottom: 3px;
+}
+
+.form-group__input {
+    padding: 7px;
+}
+
+.form-button {
+    color: white;
+    padding: 7px;
+    background-color: blue;
+}
+
+.form-button:hover {
+    cursor: pointer;
+}
