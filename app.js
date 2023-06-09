@@ -47,6 +47,17 @@ function isAuth(req, res, next) {
 /**
  * Маршруты
  */
+
+ app.get('/items', (req,res) => {
+    connection.query("SELECT * from items", (err, data, fields) =>{
+        if (err){
+            console.log(err);
+        }
+        res.status(200).send(data);
+    })
+
+});
+
 app.get('/', (req, res) => {
     const itemsPerPage = 4;
     let page = parseInt(req.query.page); // localhost?page=4

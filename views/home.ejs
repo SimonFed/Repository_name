@@ -4,6 +4,8 @@
 
 <% if (items.length > 0){ %>
 
+    <div id="content">
+
     <% for (let i = 0; i < items.length; i++) { %>
 
         <div class="section">
@@ -29,7 +31,11 @@
         <a href="/?page=<%= currentPage +1 %>">Вперед</a>
         <% } %>
     </div>
-
+</div>
 <% } %>
 
+
+
+
+<button id="fetch">lOaD ItEnnS</button>
 <%- include('particles/footer.ejs') %>
