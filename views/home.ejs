@@ -4,38 +4,40 @@
 
 <% if (items.length > 0){ %>
 
-    <div id="content">
+    <div id="content" data-pages='<%= totalPages %>'>
 
-    <% for (let i = 0; i < items.length; i++) { %>
+        <% for (let i = 0; i < items.length; i++) { %>
 
-        <div class="section">
-            <a href="/items/<%= items[i].id %>">
-                <h2 class="section__title"><%= items[i].title %></h2>
-                <img class="section__image" src="img/<%= items[i].image %>">
-            </a>
-        
+            <div class="section">
+                <a href="/items/<%= items[i].id %>">
+                    <h2 class="section__title"><%= items[i].title %></h2>
+                    <img class="section__image" src="img/<%= items[i].image %>">
+                </a>
+            
 
-        <form action="/delete" method="post">
-                <input class="form-button" type="submit" value='Удалить'>
-                <input type="hidden" value="<%= items[i].id %>" name="id">
-        </form>
+            <form action="/delete" method="post">
+                    <input class="form-button" type="submit" value='Удалить'>
+                    <input type="hidden" value="<%= items[i].id %>" name="id">
+            </form>
 
-        </div>
-    <% } %>
+            </div>
+        <% } %>
+
+    </div>
 
     <div>
         <% if (currentPage > 1) {%>
-        <a href="/?page=<%= currentPage -1 %>">Назад</a>
+            <a href="/?page=<%= currentPage -1 %>">Назад</a>
         <% } %>
         <% if (currentPage < totalPages) {%>
-        <a href="/?page=<%= currentPage +1 %>">Вперед</a>
+            <a href="/?page=<%= currentPage +1 %>">Вперед</a>
         <% } %>
-    </div>
-</div>
+    </div>    
+
 <% } %>
 
+<% if (currentPage < totalPages) {%>
+    <button id="fetch">lOaD ItEnnS</button>
+<% } %>
 
-
-
-<button id="fetch">lOaD ItEnnS</button>
 <%- include('particles/footer.ejs') %>

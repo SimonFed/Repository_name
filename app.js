@@ -20,6 +20,9 @@ connection.connect((err) => {
     }
 });
 
+// Парсинг json
+app.use(express.json())
+
 // Путь к директории файлов ресурсов (css, js, images)
 app.use(express.static('public'));
 
@@ -47,15 +50,14 @@ function isAuth(req, res, next) {
 /**
  * Маршруты
  */
-
- app.get('/items', (req,res) => {
-    connection.query("SELECT * from items", (err, data, fields) =>{
+ app.post('/items', (req,res) => {
+    connection.query("SELECT * from items LIMIT 4 OFFSET ?", [[req.body.offset]], (err, data, fields) =>{
         if (err){
             console.log(err);
         }
+
         res.status(200).send(data);
     })
-
 });
 
 app.get('/', (req, res) => {
