@@ -1,0 +1,26 @@
+<%- include('particles/header.ejs') %>
+
+<%- include('particles/navigation.ejs') %>
+
+<div id="content">
+
+    <% for (let i = 0; i < items.length; i++) { %>
+
+        <div class="section">
+            <a href="/items/<%= items[i].id %>">
+                <h2 class="section__title"><%= items[i].title %></h2>
+                <img class="section__image" src="/img/<%= items[i].image %>">
+            </a>
+        
+            <form action="/delete" method="post">
+                    <input class="form-button" type="submit" value='Удалить'>
+                    <input type="hidden" value="<%= items[i].id %>" name="id">
+            </form>
+
+        </div>
+    <% } %>
+
+</div>
+
+
+<%- include('particles/footer.ejs') %>

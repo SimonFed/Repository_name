@@ -1,0 +1,9 @@
+<%- include('particles/header.ejs') %>
+
+<%- include('particles/navigation.ejs') %>
+
+<% for (let i = 0; i < categories.length; i++) { %> 
+    <a href="/category-items/<%= categories[i].id %>"><%= categories[i].title %></a>
+<% } %>
+
+<%- include('particles/footer.ejs') %>

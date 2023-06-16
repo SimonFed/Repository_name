@@ -7,6 +7,8 @@
         <%= item.title %>
     </h2>
     <img class="section__image" src="/img/<%= item.image %>">
+    <h4>Категория: <%=cat1.title%></h4>
+    <h5>Описание: <%=cat1.description%></h5>
 </div>
 
 <form action="/update" method="post">
@@ -22,6 +24,15 @@
             placeholder="image">
     </div>
     <input type="hidden" value="<%= item.id %>" name="id">
+
+
+
+    <select name="cat_id">
+        <% for(let i = 0; i < cat.length; i++) { %>
+            <option <% if (Number(cat[i].id) === Number(item.cat_id) ) { %> selected <% } %> value="<%= cat[i].id %>"><%= cat[i].title %></option>
+        <% } %>
+    </select>
+
     <input class="form-button" type="submit" value="Обновить">
    
 </form>

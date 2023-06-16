@@ -50,9 +50,9 @@ function isAuth(req, res, next) {
 /**
  * Маршруты
  */
- app.post('/items', (req,res) => {
-    connection.query("SELECT * from items LIMIT 4 OFFSET ?", [[req.body.offset]], (err, data, fields) =>{
-        if (err){
+app.post('/items', (req, res) => {
+    connection.query("SELECT * from items LIMIT 4 OFFSET ?", [[req.body.offset]], (err, data, fields) => {
+        if (err) {
             console.log(err);
         }
 
@@ -80,7 +80,7 @@ app.get('/', (req, res) => {
         connection.query("SELECT * FROM items LIMIT ? OFFSET ?", [[itemsPerPage], [itemsPerPage * (page - 1)]], (err, data, fields) => {
             res.render('home', {
                 'items': data,
-                'currentPage' : page,
+                'currentPage': page,
                 'totalPages': pages,
             });
         });
@@ -94,20 +94,37 @@ app.get('/items/:id', (req, res) => {
                 console.log(err);
             }
 
-            res.render('item', {
-                'item': data[0],
-            })
-        });
+            connection.query("SELECT * FROM cat",
+                (err, data_cat, fields) => {
+                    if (err) {
+                        console.log(err);
+                    }
+
+                    connection.query("SELECT * FROM cat WHERE id=?", [data[0].cat_id],
+                        (err, data_cat1, fields) => {
+                            if (err) {
+                                console.log(err);
+                            }
+                            console.log(data_cat);
+                            res.render('item', {
+                                'item': data[0],
+                                'cat': data_cat1,
+                                'cat': data_cat
+                            })
+
+                        });
+                })
+        })
 })
 
-app.get('/add', isAuth,(req, res) => {
+app.get('/add', isAuth, (req, res) => {
     res.render('add')
 })
 
 app.post('/store', isAuth, (req, res) => {
     connection.query(
-        "INSERT INTO items (title, image) VALUES (?, ?)",
-        [[req.body.title], [req.body.image]],
+        "INSERT INTO items (title, image, cat_id) VALUES (?, ?, ?)",
+        [[req.body.title], [req.body.image], [req.body.cat_id]],
         (err, data, fields) => {
             if (err) {
                 console.log(err);
@@ -131,7 +148,7 @@ app.post('/delete', (req, res) => {
 
 app.post('/update', (req, res) => {
     connection.query(
-        "UPDATE items SET title=?, image=? WHERE id=?", [[req.body.title],[req.body.image],[req.body.id]], (err, data, fields) => {
+        "UPDATE items SET title=?, image=?, cat_id WHERE id=?", [[req.body.title], [req.body.image], [req.body.cat_id], [req.body.id]], (err, data, fields) => {
             if (err) {
                 console.log(err);
             }
@@ -140,7 +157,7 @@ app.post('/update', (req, res) => {
     );
 })
 
-app.get('/auth', (req,res) => {
+app.get('/auth', (req, res) => {
     res.render('auth');
 
 });
@@ -155,7 +172,7 @@ app.post('/auth', (req, res) => {
             }
             if (data.length > 0) {
                 console.log('auth');
-                req.session.auth = true;       
+                req.session.auth = true;
             } else {
                 console.log('no auth');
             }
@@ -163,3 +180,46 @@ app.post('/auth', (req, res) => {
         }
     );
 })
+
+
+app.get('/cat', isAuth, (req, res) => {
+    res.render('cat')
+})
+
+app.post('/new_cat', isAuth, (req, res) => {
+    connection.query(
+        "INSERT INTO cat (title, description) VALUES (?, ?)",
+        [[req.body.title], [req.body.description]],
+        (err, data, fields) => {
+            if (err) {
+                console.log(err);
+            }
+
+            res.redirect('/');
+        }
+    );
+})
+
+app.get('/categories', (req, res) => {
+    connection.query("select * from cat", (err, data, fields) => {
+        if (err) {
+            console.log(err);
+        }
+
+        res.render('categories', {
+            categories: data
+        });
+    });
+});
+
+app.get('/category-items/:id', (req, res) => {
+    connection.query('select * from items where cat_id=?', [[req.params.id]], (err, data, fields) => {
+        if (err) {
+            console.log(err);
+        }
+
+        res.render('category-items', {
+            items: data,
+        });
+    });
+});
