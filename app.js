@@ -89,42 +89,37 @@ app.get('/', (req, res) => {
 
 app.get('/items/:id', (req, res) => {
     connection.query("SELECT * FROM items WHERE id=?", [req.params.id],
-        (err, data, fields) => {
-            if (err) {
-                console.log(err);
-            }
+        (err, data1, fields) => {
 
-            connection.query("SELECT * FROM cat",
-                (err, data_cat, fields) => {
+
+            connection.query("SELECT * FROM cat", (err, data_cat, fields) => {
+                if (err) {
+                    console.log(err);
+                }
+
+                connection.query("SELECT * FROM cat WHERE id in (SELECT cat_id FROM items_cat WHERE id = ?)", [[req.params.id]], (err, data_cat12, fields) => {
                     if (err) {
                         console.log(err);
                     }
+                    console.log(data_cat12);
+                    res.render('item', {
+                        'item': data1[0],
+                        'cat': data_cat,
+                        'cate': data_cat12
+                    })
 
-                    connection.query("SELECT * FROM cat WHERE id=?", [data[0].cat_id],
-                        (err, data_cat1, fields) => {
-                            if (err) {
-                                console.log(err);
-                            }
-                            console.log(data_cat);
-                            res.render('item', {
-                                'item': data[0],
-                                'cat': data_cat1,
-                                'cat': data_cat
-                            })
-
-                        });
-                })
+                });
+            })
         })
 })
-
 app.get('/add', isAuth, (req, res) => {
     res.render('add')
 })
 
 app.post('/store', isAuth, (req, res) => {
     connection.query(
-        "INSERT INTO items (title, image, cat_id) VALUES (?, ?, ?)",
-        [[req.body.title], [req.body.image], [req.body.cat_id]],
+        "INSERT INTO items (title, image) VALUES (?, ?)",
+        [[req.body.title], [req.body.image]],
         (err, data, fields) => {
             if (err) {
                 console.log(err);
@@ -148,15 +143,28 @@ app.post('/delete', (req, res) => {
 
 app.post('/update', (req, res) => {
     connection.query(
-        "UPDATE items SET title=?, image=?, cat_id WHERE id=?", [[req.body.title], [req.body.image], [req.body.cat_id], [req.body.id]], (err, data, fields) => {
+        "UPDATE items SET title=?, image=? WHERE id=?", [[req.body.title], [req.body.image], [req.body.id]], (err, data, fields) => {
             if (err) {
                 console.log(err);
             }
-            res.redirect('/');
-        }
-    );
-})
+            connection.query(
+                "SELECT * FROM items_cat WHERE id=? AND cat_id = ?", [[req.body.id], [req.body.cat_id]], (err, data, fields) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    if (data.length == 0) {
+                        connection.query(
+                            'INSERT INTO items_cat (id, cat_id) VALUES (?, ?)', [[req.body.id], [req.body.cat_id]], (err, data, fields) => {
+                                if (err) {
+                                    console.log(err);
+                                }
 
+                            }
+                        );
+                    } res.redirect('/');
+                });
+        })
+})
 app.get('/auth', (req, res) => {
     res.render('auth');
 
@@ -223,3 +231,16 @@ app.get('/category-items/:id', (req, res) => {
         });
     });
 });
+
+// app.get('/item_cat/:id', (req, res) => {
+//     connection.query("SELECT * FROM items WHERE id=?", [req.params.id],
+//     (err, data, fields) => {
+//         if (err) {
+//             console.log(err);
+//         }
+//                         res.render('item', {
+//                             'item': data[0],
+//                         })
+
+//                     });
+// })
