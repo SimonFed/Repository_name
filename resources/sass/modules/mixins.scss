@@ -1,0 +1,11 @@
+$breakpoints: (
+    'small': (max-width: 600px)
+);
+
+@mixin breakpoint($value) {
+    @if map-has-key($breakpoints, $value) {
+        @media #{inspect(map-get($breakpoints, $value))} {
+            @content;
+        }
+    }
+}

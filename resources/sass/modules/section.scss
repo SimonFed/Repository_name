@@ -1,0 +1,22 @@
+.section {
+    padding: 20px;
+    border-radius: 8px;
+    display: inline-block;
+    border: 2px solid blue;
+    background-color: lightcyan;
+
+    @include breakpoint ('small'){
+        padding: 0;
+    }
+
+    &__image {
+        border-radius: 8px;
+    }
+    &__title {
+        margin-top: 0;
+        text-align: center;
+        @include breakpoint ('small'){
+            text-align: left;
+        }
+    }
+}
