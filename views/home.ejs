@@ -1,6 +1,12 @@
 <%- include('particles/header.ejs') %>
 
-<%- include('particles/navigation.ejs') %>
+<%if (session){%>
+    <form action="/not_log" method="post">
+        <input type="submit" name="but" class="but" value="Выйти">
+    </form>
+<%}%>
+
+<%- include('particles/navigation.ejs')%>
 
 <% if (items.length > 0){ %>
 
@@ -39,5 +45,7 @@
 <% if (currentPage < totalPages) {%>
     <button id="fetch">lOaD ItEnnS</button>
 <% } %>
+
+
 
 <%- include('particles/footer.ejs') %>

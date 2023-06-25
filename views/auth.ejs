@@ -1,6 +1,6 @@
 <%- include('particles/header.ejs') %>
 
-<%- include('particles/navigation.ejs') %>
+<!-- <%- include('particles/navigation.ejs') %> -->
 
 
 
@@ -11,6 +11,15 @@
             <input  name='password' type="password" placeholder='Пароль'>
             <input class="form-button" type="submit" value="Войти">
     </form>
+</div>
+<br>
+<br>
+<div class="section">
+    <form action="/reg" method="post">
+        <input  name='name'type="text" placeholder='Имя'>
+        <input  name='password' type="password" placeholder='Пароль'>
+        <input class="form-button" type="submit" value="Зарегестрироваться">
+</form>
 
     </div>
 

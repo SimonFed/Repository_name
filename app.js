@@ -8,10 +8,10 @@ app.use(session({ secret: "Secret", resave: false, saveUninitialized: true }));
 require('dotenv').config()
 // Соединение с базой данных
 const connection = mysql.createConnection({
-    host: process.env.HOST,
-    database: process.env.DATABASE,
-    user: process.env.USER,
-    password: process.env.PASSWORD
+    host: '',
+    database: '',
+    user: '',
+    password: ''
 });
 
 connection.connect((err) => {
@@ -82,6 +82,7 @@ app.get('/', (req, res) => {
                 'items': data,
                 'currentPage': page,
                 'totalPages': pages,
+                'session': req.session.auth
             });
         });
     })
@@ -101,7 +102,7 @@ app.get('/items/:id', (req, res) => {
                     if (err) {
                         console.log(err);
                     }
-                    console.log(data_cat12);
+                    // console.log(data_cat12);
                     res.render('item', {
                         'item': data1[0],
                         'cat': data_cat,
@@ -130,7 +131,7 @@ app.post('/store', isAuth, (req, res) => {
     );
 })
 
-app.post('/delete', (req, res) => {
+app.post('/delete', isAuth, (req, res) => {
     connection.query(
         "DELETE FROM items WHERE id=?", [[req.body.id]], (err, data, fields) => {
             if (err) {
@@ -141,7 +142,7 @@ app.post('/delete', (req, res) => {
     );
 })
 
-app.post('/update', (req, res) => {
+app.post('/update', isAuth, (req, res) => {
     connection.query(
         "UPDATE items SET title=?, image=? WHERE id=?", [[req.body.title], [req.body.image], [req.body.id]], (err, data, fields) => {
             if (err) {
@@ -179,10 +180,8 @@ app.post('/auth', (req, res) => {
                 console.log(err);
             }
             if (data.length > 0) {
-                console.log('auth');
+                // console.log('auth');
                 req.session.auth = true;
-            } else {
-                console.log('no auth');
             }
             res.redirect('/');
         }
@@ -221,26 +220,44 @@ app.get('/categories', (req, res) => {
 });
 
 app.get('/category-items/:id', (req, res) => {
-    connection.query('select * from items where cat_id=?', [[req.params.id]], (err, data, fields) => {
+    connection.query('select id from items_cat where cat_id=?', [[req.params.id]], (err, data, fields) => {
         if (err) {
             console.log(err);
         }
-
+        let as =[]
+        for(let i = 0; data.length > i; i++){
+            as[i]=data[i].id
+        }
+        // console.log(as);
+        connection.query('select * from items where id in ?', [[as]], (err, items, fields) => {
+            if (err) {
+                console.log(err);
+            }
+            // console.log(data);
+            // console.log(items);
+            
         res.render('category-items', {
-            items: data,
+            items: items,
         });
     });
 });
+});
 
-// app.get('/item_cat/:id', (req, res) => {
-//     connection.query("SELECT * FROM items WHERE id=?", [req.params.id],
-//     (err, data, fields) => {
-//         if (err) {
-//             console.log(err);
-//         }
-//                         res.render('item', {
-//                             'item': data[0],
-//                         })
+app.post('/reg', (req, res) => {
+    connection.query(
+        "INSERT INTO users (name, password) VALUES (?, ?)",
+        [[req.body.name], [req.body.password]],
+        (err, data, fields) => {
+            if (err) {
+                console.log(err);
+            }
 
-//                     });
-// })
+            res.redirect('/');
+        }
+    );
+})
+
+app.post('/not_log', (req, res) => {
+    req.session.auth = false;
+    res.redirect('auth');
+})
