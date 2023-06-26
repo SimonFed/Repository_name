@@ -3,7 +3,7 @@
 <%- include('particles/navigation.ejs') %>
 
 <div id="content">
-
+<% if (items  != undefined){%>
     <% for (let i = 0; i < items.length; i++) { %>
 
         <div class="section">
@@ -19,7 +19,7 @@
 
         </div>
     <% } %>
-
+    <% } %>
 </div>
 
 

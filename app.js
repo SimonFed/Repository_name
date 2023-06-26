@@ -8,10 +8,10 @@ app.use(session({ secret: "Secret", resave: false, saveUninitialized: true }));
 require('dotenv').config()
 // Соединение с базой данных
 const connection = mysql.createConnection({
-    host: '',
-    database: '',
-    user: '',
-    password: ''
+    host: '127.0.0.1',
+    database: 'nature',
+    user: 'root',
+    password: 'secret'
 });
 
 connection.connect((err) => {
@@ -234,8 +234,8 @@ app.get('/category-items/:id', (req, res) => {
                 console.log(err);
             }
             // console.log(data);
-            // console.log(items);
-            
+            console.log(items);
+            if (items == undefined) items == []
         res.render('category-items', {
             items: items,
         });
